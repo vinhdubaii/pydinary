@@ -1,0 +1,20 @@
+<!--
+  Titlebar rieng cua pydinary-app.
+  File nay duoc scripts/fetch-web.mjs chen ngay sau the <body> mo cua
+  index.html (ban copy tam) — hoan toan tach biet voi markup cua
+  pydinary-web, khong dung id/class voi bat ky phan tu nao cua web goc.
+-->
+<div id="app-titlebar" data-tauri-drag-region>
+  <div class="app-titlebar-spacer" data-tauri-drag-region></div>
+  <div class="app-titlebar-controls">
+    <button id="titlebar-min" class="titlebar-btn" aria-label="Thu nhỏ" type="button">
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button id="titlebar-max" class="titlebar-btn" aria-label="Phóng to" type="button">
+      <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+    </button>
+    <button id="titlebar-close" class="titlebar-btn titlebar-btn-close" aria-label="Đóng" type="button">
+      <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+    </button>
+  </div>
+</div>
