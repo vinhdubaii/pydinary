@@ -24,12 +24,19 @@ const TITLEBAR_HTML: &str = include_str!("../../titlebar/titlebar.html");
 const TITLEBAR_CSS: &str = include_str!("../../titlebar/titlebar.css");
 const TITLEBAR_JS: &str = include_str!("../../titlebar/titlebar.js");
 
-/// Ghep CSS + markup + logic cua titlebar thanh 1 doan JS duy nhat, dung
-/// lam initialization_script — chay truoc khi trang (pydinary.pages.dev)
-/// duoc parse, nen phai tu cho document.body xuat hien (DOMContentLoaded)
-/// roi moi chen <style> + markup titlebar vao, sau do chay tiep logic cu
-/// cua titlebar.js (bind nut, F11/Esc) — luc do cac phan tu da ton tai nen
-/// document.getElementById(...) hoat dong binh thuong, giong het truoc day.
+/// Ghep CSS + markup + logic cua titlebar + chan chuot phai thanh 1 doan JS
+/// duy nhat, dung lam initialization_script — chay truoc khi trang
+/// (pydinary.pages.dev) duoc parse, nen phai tu cho document.body xuat hien
+/// (DOMContentLoaded) roi moi chen <style> + markup titlebar vao, sau do
+/// chay tiep logic cu cua titlebar.js (bind nut, F11/Esc) — luc do cac phan
+/// tu da ton tai nen document.getElementById(...) hoat dong binh thuong,
+/// giong het truoc day.
+///
+/// Chan chuot phai (contextmenu) o toan trang, tru rieng <input>/<textarea>/
+/// phan tu contenteditable — nhung cho do van giu duoc menu Dan/Copy qua
+/// chuot phai. Khong lien quan gi toi DevTools: F12 da bi tat san o muc
+/// WebView2 vi Cargo.toml khong bat feature "devtools" cua tauri (chi co
+/// hieu luc tren debug build), nen khong can them gi rieng cho phan do.
 ///
 /// Dung serde_json::to_string de encode CSS/HTML thanh chuoi JS an toan
 /// (tu dong escape dau nhay/xuong dong...), tranh loi neu noi dung co ky
@@ -64,6 +71,22 @@ fn titlebar_injection_script() -> String {
   }} else {{
     injectTitlebar();
   }}
+
+  // Chan chuot phai toan trang, tru input/textarea/contenteditable (van
+  // dung "capture" phase de chan som, truoc khi bat ky handler nao cua web
+  // co the ngan chan viec nay). Doc lap voi injectTitlebar() — khong can
+  // doi titlebar chen xong moi bat.
+  document.addEventListener(
+    "contextmenu",
+    function (event) {{
+      var editable = event.target.closest &&
+        event.target.closest('input, textarea, [contenteditable]:not([contenteditable="false"])');
+      if (!editable) {{
+        event.preventDefault();
+      }}
+    }},
+    true
+  );
 }})();
 "#,
         css = css_js_string,
